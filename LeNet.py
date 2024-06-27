@@ -32,3 +32,37 @@ loss, acc = LeNet.evaluate(X_test, y_test)
 print(f"Accuracy: {acc*100:.2f}%")
 LeNet.save("LeNet.keras")
 
+
+"""
+LeNet-5 is a classic convolutional neural network architecture designed for handwritten digit recognition, 
+particularly for the MNIST dataset.
+
+Architecture:
+1. Input Layer: Accepts 32x32 pixel grayscale images (MNIST digits are 28x28, zero-padded to 32x32).
+2. First Convolutional Layer: Conv2D with 6 filters of size 5x5, followed by AveragePooling2D (2x2).
+3. Second Convolutional Layer: Conv2D with 16 filters of size 5x5, followed by AveragePooling2D (2x2).
+4. Flatten Layer: Flattens the 2D output of the previous layer into a 1D vector.
+5. First Dense Layer: Fully connected with 120 units, using ReLU activation.
+6. Second Dense Layer: Fully connected with 84 units, using ReLU activation.
+7. Output Layer: Fully connected with 10 units (one for each digit class), using softmax activation.
+
+Key Features:
+- LeNet-5 uses convolutional layers for feature extraction and pooling layers for spatial downsampling, 
+  which helps in reducing the number of parameters and computation.
+- It introduces the concept of convolutional neural networks (CNNs) and demonstrates their effectiveness 
+  in image recognition tasks.
+- Designed by Yann LeCun in the late 1990s, LeNet-5 laid the foundation for modern CNN architectures 
+  and is a milestone in deep learning history.
+
+Usage:
+- Suitable for small image classification tasks, especially handwritten digit recognition like MNIST.
+- Provides a good introduction to CNNs due to its simple yet effective design principles.
+
+Limitations:
+- Limited to grayscale images of fixed size (32x32), which may not be suitable for more complex image datasets 
+  or color images.
+- May struggle with more intricate patterns or larger datasets compared to modern CNN architectures.
+
+Overall, LeNet-5 remains a fundamental model in the development of deep learning and computer vision, 
+showcasing the power of convolutional networks for image classification tasks.
+"""
