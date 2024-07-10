@@ -30,7 +30,7 @@ LeNet.fit(X_train, y_train, epochs = 10)
 LeNet.summary()
 loss, acc = LeNet.evaluate(X_test, y_test)
 print(f"Accuracy: {acc*100:.2f}%")
-LeNet.save("LeNet.keras")
+LeNet.save("LeNet5.keras")
 
 
 """
