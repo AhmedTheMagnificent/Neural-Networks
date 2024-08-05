@@ -2,9 +2,6 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Check for available GPUs
-print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
-
 (X_train, _), (_, _) = tf.keras.datasets.fashion_mnist.load_data()
 X_train = X_train / 255.0
 X_train = tf.convert_to_tensor(X_train, dtype=tf.float32)
