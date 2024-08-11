@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 (X_train, _), (_, _) = tf.keras.datasets.fashion_mnist.load_data()
 X_train = X_train / 255.0
@@ -74,28 +75,48 @@ GAN = FashionGAN(generator, discriminator)
 GAN.compile()
 
 history = {'gLoss': [], 'dLoss': []}
-epochs = 20
-batch_size = 128
+epochs = 30
+batchSize = 256
 
 for epoch in range(epochs):
     print(f"Epoch {epoch + 1}/{epochs}")
-    for i in range(0, X_train.shape[0], batch_size):
-        print(f"Batch {i // batch_size + 1}/{X_train.shape[0] // batch_size}")
-        batch = X_train[i:i + batch_size]
+    for i in range(0, X_train.shape[0], batchSize):
+        print(f"Batch {i // batchSize + 1}/{X_train.shape[0] // batchSize}")
+        batch = X_train[i:i + batchSize]
         losses = GAN.train(batch)
         history['gLoss'].append(losses['gLoss'])
         history['dLoss'].append(losses['dLoss'])
 
-    # Save the models after each epoch
-    generator.save(f"generator_model_epoch_{epoch + 1}.h5")
-    discriminator.save(f"discriminator_model_epoch_{epoch + 1}.h5")
-
-# Save final models
-generator.save("generator_model_final.h5")
-discriminator.save("discriminator_model_final.h5")
+generator.save("generatorModelFinal.keras")
+discriminator.save("discriminatorModelFinal.keras")
 
 plt.suptitle('Loss')
 plt.plot(history['dLoss'], label='dLoss')
 plt.plot(history['gLoss'], label='gLoss')
 plt.legend()
 plt.show()
+
+path = "generatorModelFinal.keras"
+
+if os.path.exists(path):
+    generator = tf.keras.models.load_model(path)
+    print("Model loaded successfully.")
+else:
+    print(f"File not found: {path}")
+
+def generateImages(generator, numImages=5, noiseDim=100):
+    noise = tf.random.normal([numImages, noiseDim])
+    generatedImages = generator(noise, training=False)
+    generatedImages = 0.5 * generatedImages + 0.5
+
+    plt.figure(figsize=(10, 2))
+    for i in range(numImages):
+        plt.subplot(1, numImages, i + 1)
+        plt.imshow(generatedImages[i, :, :, 0], cmap='gray')
+        plt.axis('off')
+    plt.show()
+
+if os.path.exists(path):
+    generateImages(generator, numImages=5)
+else:
+    print("Unable to generate images, model not loaded.")
