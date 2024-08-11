@@ -76,19 +76,17 @@ GAN.compile()
 
 history = {'gLoss': [], 'dLoss': []}
 epochs = 30
-batchSize = 256
+batch_size = 256
 
 for epoch in range(epochs):
-    print(f"Epoch {epoch + 1}/{epochs}")
-    for i in range(0, X_train.shape[0], batchSize):
-        print(f"Batch {i // batchSize + 1}/{X_train.shape[0] // batchSize}")
-        batch = X_train[i:i + batchSize]
+    for i in range(0, X_train.shape[0], batch_size):
+        batch = X_train[i:i + batch_size]
         losses = GAN.train(batch)
         history['gLoss'].append(losses['gLoss'])
         history['dLoss'].append(losses['dLoss'])
 
-generator.save("generatorModelFinal.keras")
-discriminator.save("discriminatorModelFinal.keras")
+generator.save("generator_model_final.keras")
+discriminator.save("discriminator_model_final.keras")
 
 plt.suptitle('Loss')
 plt.plot(history['dLoss'], label='dLoss')
@@ -96,27 +94,53 @@ plt.plot(history['gLoss'], label='gLoss')
 plt.legend()
 plt.show()
 
-path = "generatorModelFinal.keras"
+path = ("generator_model_final.keras")
 
 if os.path.exists(path):
     generator = tf.keras.models.load_model(path)
-    print("Model loaded successfully.")
-else:
-    print(f"File not found: {path}")
 
-def generateImages(generator, numImages=5, noiseDim=100):
-    noise = tf.random.normal([numImages, noiseDim])
-    generatedImages = generator(noise, training=False)
-    generatedImages = 0.5 * generatedImages + 0.5
+def generate_images(generator, num_images=5, noise_dim=100):
+    noise = tf.random.normal([num_images, noise_dim])
+    generated_images = generator(noise, training=False)
+    generated_images = 0.5 * generated_images + 0.5
 
     plt.figure(figsize=(10, 2))
-    for i in range(numImages):
-        plt.subplot(1, numImages, i + 1)
-        plt.imshow(generatedImages[i, :, :, 0], cmap='gray')
+    for i in range(num_images):
+        plt.subplot(1, num_images, i+1)
+        plt.imshow(generated_images[i, :, :, 0], cmap='gray')
         plt.axis('off')
     plt.show()
 
 if os.path.exists(path):
-    generateImages(generator, numImages=5)
-else:
-    print("Unable to generate images, model not loaded.")
+    generate_images(generator, num_images=5)
+
+"""
+FashionGAN is a Generative Adversarial Network (GAN) designed to generate images that resemble those in the Fashion MNIST dataset. The GAN consists of two main components: a Generator and a Discriminator.
+
+Architecture:
+
+1. Generator:
+   - Input Layer: A 100-dimensional noise vector.
+   - Dense Layer: Fully connected layer that reshapes the input into a 7x7x128 tensor.
+   - Conv2DTranspose Layers: Three transposed convolutional layers with ReLU activation and batch normalization. The final layer outputs a 28x28x1 image with sigmoid activation.
+
+2. Discriminator:
+   - Input Layer: A 28x28x1 grayscale image.
+   - Conv2D Layers: Three convolutional layers with Leaky ReLU activation and dropout for regularization. Each layer reduces the spatial dimensions of the input.
+   - Flatten Layer: Flattens the output into a 1D vector.
+   - Dense Layer: Fully connected layer with sigmoid activation to classify the input as real or fake.
+
+Key Features:
+- The Generator is trained to produce images that can deceive the Discriminator.
+- The Discriminator is trained to differentiate between real and fake images.
+- The model uses Binary Cross-Entropy as the loss function for both the Generator and Discriminator, optimizing with the Adam optimizer.
+
+Usage:
+- The script first trains the GAN on the Fashion MNIST dataset.
+- After training, it saves the Generator and Discriminator models.
+- The saved Generator model is then used to generate new images from random noise, showcasing the GAN's ability to create fashion-related images.
+
+Limitations:
+- The model may struggle to generate high-quality images if not trained for a sufficient number of epochs or with an appropriate batch size.
+- GAN training can be unstable, requiring careful tuning of hyperparameters like learning rate and noise addition.
+"""
